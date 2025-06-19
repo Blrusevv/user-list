@@ -7,13 +7,21 @@ const initialState: UsersState = {
   users: [],
   loading: false,
   error: null,
+  updateLoading: false,
 };
 
 export const fetchUsers = createAsyncThunk<User[], void>('users/fetchUsers', async () => {
   return await fetchUsersService();
 });
 
-export const updateUser = createAsyncThunk<User, { id: number; data: Partial<User> }>('users/updateUser', async ({ id, data }) => {
+export const fetchUserById = createAsyncThunk<User, number>('users/fetchUserById', async (id) => {
+  const users = await fetchUsersService();
+  const user = users.find((user: User) => user.id === id);
+  if (!user) console.log('User not found');
+  return user;
+});
+
+export const updateUser = createAsyncThunk<User, { id: number; data: any }>('users/updateUser', async ({ id, data }) => {
   return await updateUserService(id, data);
 });
 
@@ -35,9 +43,33 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch users';
       })
+      .addCase(fetchUserById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.users.findIndex((user: User) => user.id === action.payload.id);
+        if (index >= 0) {
+          state.users[index] = action.payload;
+        } else {
+          state.users.push(action.payload);
+        }
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch user';
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.updateLoading = true;
+      })
       .addCase(updateUser.fulfilled, (state, action) => {
         const updatedUser = action.payload;
-        state.users = state.users.map((user) => (user.id === updatedUser.id ? { ...user, ...updatedUser } : user));
+        state.users = state.users.map((user: User) => (user.id === updatedUser.id ? { ...user, ...updatedUser } : user));
+        state.updateLoading = false;
+      })
+      .addCase(updateUser.rejected, (state) => {
+        state.updateLoading = false;
       });
   },
 });

@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { User } from '../types/User';
-import UserField from './UserField';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { userSchema } from '../utils';
+import { UserField } from '.';
 
 interface UserDetailsGridProps {
   user: User;
   onSave: (data: any) => Promise<void> | void;
   onCancel?: () => void;
+  isUpdating?: boolean;
 }
 
 const fields = [
@@ -24,8 +25,7 @@ const fields = [
   { label: 'Company', name: 'company.name' },
 ];
 
-const UserDetailsGrid: React.FC<UserDetailsGridProps> = ({ user, onSave, onCancel }) => {
-  const [loading, setLoading] = useState(false);
+const UserDetailsGrid: React.FC<UserDetailsGridProps> = ({ user, onSave, onCancel, isUpdating = false }) => {
   const methods = useForm<any>({
     defaultValues: user,
     resolver: yupResolver(userSchema),
@@ -41,41 +41,32 @@ const UserDetailsGrid: React.FC<UserDetailsGridProps> = ({ user, onSave, onCance
   const isChanged = JSON.stringify(watchedValues) !== JSON.stringify(user);
 
   const handleSave = async (data: any) => {
-    setLoading(true);
-    try {
-      await onSave(data);
-      reset(data);
-    } finally {
-      setLoading(false);
-    }
+    await onSave(data);
+    reset(data);
   };
 
   return (
     <FormProvider {...methods}>
       <form className="user-details-grid" onSubmit={handleSubmit(handleSave)}>
-        {loading ? (
-          <div className="spinner-center" style={{ gridColumn: '1 / span 2' }}>
-            <Spinner animation="border" />
-          </div>
-        ) : (
-          <>
-            {fields.map((field) => (
-              <UserField
-                key={field.name}
-                label={field.label}
-                name={field.name}
-              />
-            ))}
-            <div className="user-details-actions">
-              <Button variant="secondary" type="button" onClick={onCancel} disabled={loading}>
-                Cancel
-              </Button>
-              <Button variant="primary" type="submit" disabled={!isChanged || !formState.isValid || loading}>
-                Save
-              </Button>
-            </div>
-          </>
-        )}
+        {fields.map((field) => (
+          <UserField
+            key={field.name}
+            label={field.label}
+            name={field.name}
+          />
+        ))}
+        <div className="user-details-actions">
+          <Button variant="secondary" type="button" onClick={onCancel} disabled={isUpdating}>
+            Cancel
+          </Button>
+          <Button variant="primary" type="submit" disabled={!isChanged || !formState.isValid || isUpdating}>
+            {isUpdating ? (
+              <Spinner animation="border" className="button-spinner" />
+            ) : (
+              'Save'
+            )}
+          </Button>
+        </div>
       </form>
     </FormProvider>
   );

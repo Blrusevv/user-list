@@ -5,7 +5,12 @@ export const fetchUsers = async () => {
   return response.data;
 };
 
-export const updateUser = async (id: number, data: any) => {
-  const response = await api.patch(`users/${id}`, data);
+export const updateUser = async (userId: number, data: any) => {
+  const response = await api.patch(`users/${userId}`, data);
+  return response.data;
+};
+
+export const getUserPosts = async (userId: number) => {
+  const response = await api.get('posts', { params: { userId } });
   return response.data;
 }; 

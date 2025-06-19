@@ -3,6 +3,7 @@ import UserLayout from '../layouts/UserLayout';
 import UsersPage from '../pages/UsersPage';
 import UserDetailsPage from '../pages/UserDetailsPage';
 import TasksPage from '../pages/TasksPage';
+import { useRoutes } from 'react-router-dom';
 
 export const routes = [
   {
@@ -21,3 +22,6 @@ export const routes = [
     ],
   },
 ]; 
+
+const RoutesComponent = () => useRoutes(routes);
+export default RoutesComponent; 

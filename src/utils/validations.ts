@@ -9,3 +9,8 @@ export const userSchema = yup.object().shape({
       city: yup.string().required('City is required'),
     }),
   });
+
+  export const postSchema = yup.object().shape({
+    title: yup.string().required('Title is required'),
+    body: yup.string().required('Body is required'),
+  });

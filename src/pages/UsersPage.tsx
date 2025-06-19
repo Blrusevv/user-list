@@ -5,17 +5,18 @@ import Alert from 'react-bootstrap/Alert';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { fetchUsers, updateUser } from '../store/slices/userSlice';
 import { User } from '../types/User';
-import UserDetailsGrid from '../components/UserDetailsGrid';
+import { Link } from 'react-router-dom';
+import { UserDetailsGrid } from '../components';
 
 const UsersPage: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { users, loading, error } = useAppSelector((state) => state.users);
+    const { users, loading, error, updateLoading } = useAppSelector((state) => state.users);
 
     useEffect(() => {
       dispatch(fetchUsers());
     }, [dispatch]);
 
-    const handleSave = async (userId: number, data: any) => {
+    const handleSave = async (userId: number, data: User) => {
       await dispatch(updateUser({ id: userId, data }));
     };
 
@@ -33,12 +34,23 @@ const UsersPage: React.FC = () => {
             {users.map((user: User, idx: number) => (
               <Accordion.Item eventKey={String(idx)} key={user.id}>
                 <Accordion.Header>
-                  {user.name} <span className="ms-2 text-muted">({user.username})</span>
+                  <div className="user-header-row">
+                    <span>
+                      {user.name} <span className="ms-2 text-muted">({user.username})</span>
+                    </span>
+                    <Link
+                      to={`/users/${user.id}`}
+                      className="ms-2"
+                    >
+                      See posts
+                    </Link>
+                  </div>
                 </Accordion.Header>
                 <Accordion.Body>
                   <UserDetailsGrid
                     user={user}
                     onSave={(data) => handleSave(user.id, data)}
+                    isUpdating={updateLoading}
                   />
                 </Accordion.Body>
               </Accordion.Item>
