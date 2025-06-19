@@ -3,9 +3,9 @@ import './styles/main.scss';
 import Accordion from 'react-bootstrap/Accordion';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
-import { useAppDispatch } from './hooks/useAppDispatch';
-import { useAppSelector } from './hooks/useAppSelector';
 import { fetchUsers } from './store/slices/userSlice';
+import { User } from './types/User';
+import { useAppDispatch, useAppSelector } from './hooks';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -21,7 +21,7 @@ function App() {
       {loading && <Spinner animation="border" />}
       {error && <Alert variant="danger">{error}</Alert>}
       <Accordion alwaysOpen>
-        {users.map((user: any, idx: number) => (
+        {users.map((user: User, idx: number) => (
           <Accordion.Item eventKey={String(idx)} key={user.id}>
             <Accordion.Header>
               {user.name} <span className="ms-2 text-muted">({user.username})</span>

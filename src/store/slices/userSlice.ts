@@ -1,17 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchUsers as fetchUsersService } from '../../services/userService';
+import { UsersState } from './interfaces';
+import { User } from '../../types/User';
 
-export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
+const initialState: UsersState = {
+  users: [],
+  loading: false,
+  error: null,
+};
+
+export const fetchUsers = createAsyncThunk<User[], void>('users/fetchUsers', async () => {
   return await fetchUsersService();
 });
 
 const userSlice = createSlice({
   name: 'users',
-  initialState: {
-    users: [],
-    loading: false,
-    error: null as string | null,
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
