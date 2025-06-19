@@ -1,0 +1,20 @@
+.spinner-border {
+  border-width: 0.2em;
+  width: 4rem;
+  height: 4rem;
+  border-top-color: $primary !important;
+}
+
+.spinner-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+} 
+
+.main-navbar {
+  width: 100vw;
+  left: 0;
+  position: relative;
+  border-radius: 0;
+}
