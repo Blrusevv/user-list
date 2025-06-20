@@ -1,46 +1,136 @@
-# Getting Started with Create React App
+# User Management & Task Tracking Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React application for managing users and tasks, built with TypeScript, Redux Toolkit, and Bootstrap. The app provides a comprehensive interface for viewing, editing, and managing user data along with their associated posts and tasks.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+### User Management
+- **User List**: Display all users in a collapsible accordion format
+- **User Details**: Comprehensive user profile with editable information
+- **Real-time Editing**: Inline editing with form validation
+- **User Posts**: View and manage user posts with full CRUD operations
+- **Responsive Design**: Mobile-friendly interface with Bootstrap components
 
-### `npm start`
+### Task Management
+- **Task List**: Paginated table view of all tasks
+- **Advanced Filtering**: Filter by status, title, and owner
+- **Status Toggle**: Quick task completion status updates
+- **Persistent Changes**: Local storage persistence for task modifications
+- **Reset Functionality**: Option to restore original data
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🛠️ Tech Stack
+- **Frontend**: React 19, TypeScript 4.9
+- **State Management**: Redux Toolkit 2.8, RTK Query
+- **UI Framework**: Bootstrap 5.3, React Bootstrap 2.10
+- **Forms**: React Hook Form 7.58, Yup validation
+- **Routing**: React Router DOM 7.6
+- **HTTP Client**: Axios 1.10
+- **Styling**: SCSS with custom variables
+- **Build Tool**: Create React App 5.0
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 📁 Project Structure
 
-### `npm test`
+```
+src/
+├── components/          # Reusable UI components
+│   ├── DeleteConfirmationModal.tsx
+│   ├── MainNav.tsx
+│   ├── PostForm.tsx
+│   ├── UserDetailsGrid.tsx
+│   └── UserField.tsx
+├── hooks/              # Custom React hooks
+├── layouts/            # Layout components
+├── pages/              # Page components
+│   ├── TasksPage.tsx
+│   ├── UserDetailsPage.tsx
+│   └── UsersPage.tsx
+├── routes/             # Routing configuration
+├── services/           # API services and RTK Query
+├── store/              # Redux store and slices
+├── styles/             # SCSS stylesheets
+├── types/              # TypeScript type definitions
+└── utils/              # Utility functions
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 Getting Started
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd user-list
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install dependencies:
+```bash
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Create environment file:
+```bash
+cp .env-example .env
+```
 
-### `npm run eject`
+4. Start the development server:
+```bash
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The application will be available at [http://localhost:3000](http://localhost:3000).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📱 Available Scripts
+- `npm start` - Runs the app in development mode
+- `npm test` - Launches the test runner
+- `npm run build` - Builds the app for production
+- `npm run eject` - Ejects from Create React App (one-way operation)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 🔧 Configuration
+### Environment Variables
+Create a `.env` file in the root directory:
+```
+REACT_APP_API_BASE_URL=https://jsonplaceholder.typicode.com
+```
 
-## Learn More
+### API Endpoints
+The application uses JSONPlaceholder API for demo data:
+- Users: `/users`
+- Posts: `/posts`
+- Tasks: `/todos`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🎨 UI/UX Features
+- **Responsive Design**: Mobile-first approach with Bootstrap 5
+- **Floating Labels**: Modern form inputs with floating labels
+- **Loading States**: Comprehensive loading indicators throughout the app
+- **Confirmation Modals**: Safe deletion with confirmation dialogs
+- **Form Validation**: Real-time validation with error messages
+- **Accessibility**: Semantic HTML and ARIA attributes
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+
+## 🚀 Deployment
+Build the application for production:
+```bash
+npm run build
+```
+
+The build artifacts will be stored in the `build/` directory, ready for deployment to any static hosting service.
+
+## 🤝 Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+- [JSONPlaceholder](https://jsonplaceholder.typicode.com/) for providing the demo API
+- [Create React App](https://create-react-app.dev/) for the project scaffolding
+- [Bootstrap](https://getbootstrap.com/) for the UI framework
+- [Redux Toolkit](https://redux-toolkit.js.org/) for state management
