@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getUserPosts as getUserPostsService } from '../../services/userService';
 import { Post } from '../../types/Post';
+import { getStoredPosts, setStoredPosts } from '../../utils';
 
 interface PostsState {
   posts: Post[];
@@ -15,7 +16,17 @@ const initialState: PostsState = {
 };
 
 export const fetchUserPosts = createAsyncThunk<Post[], number>('posts/fetchUserPosts', async (userId) => {
-  return await getUserPostsService(userId);
+  const posts = await getUserPostsService(userId);
+  const storedPosts = getStoredPosts();
+  
+  if (storedPosts) {
+    return posts.map((post: Post) => {
+      const storedPost = storedPosts.find(p => p.id === post.id);
+      return storedPost ? { ...post, ...storedPost } : post;
+    });
+  }
+  
+  return posts;
 });
 
 const postSlice = createSlice({
@@ -25,10 +36,12 @@ const postSlice = createSlice({
     updatePost: (state, action) => {
       const { id, data } = action.payload;
       state.posts = state.posts.map((post) => (post.id === id ? { ...post, ...data } : post));
+      setStoredPosts(state.posts);
     },
     deletePost: (state, action) => {
       const postId = action.payload;
       state.posts = state.posts.filter((post) => post.id !== postId);
+      setStoredPosts(state.posts);
     },
   },
   extraReducers: (builder) => {
@@ -40,6 +53,7 @@ const postSlice = createSlice({
       .addCase(fetchUserPosts.fulfilled, (state, action) => {
         state.loading = false;
         state.posts = action.payload;
+        setStoredPosts(action.payload);
       })
       .addCase(fetchUserPosts.rejected, (state, action) => {
         state.loading = false;

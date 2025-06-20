@@ -1,3 +1,4 @@
 import { userSchema } from './validations';
+import { getStoredUsers, setStoredUsers, getStoredPosts, setStoredPosts, clearStoredData } from './persistence';
 
-export { userSchema };
+export { userSchema, getStoredUsers, setStoredUsers, getStoredPosts, setStoredPosts, clearStoredData };

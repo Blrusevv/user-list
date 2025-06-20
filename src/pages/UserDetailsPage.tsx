@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
 import { UserDetailsGrid, PostForm, DeleteConfirmationModal } from '../components';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { fetchUserById, updateUser } from '../store/slices/userSlice';
 import { updatePost, deletePost, fetchUserPosts } from '../store/slices/postSlice';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
-import Button from 'react-bootstrap/Button';
 
 const UserDetailsPage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -68,7 +68,6 @@ const UserDetailsPage: React.FC = () => {
 
   return (
     <div className="container py-4">
-      <h2 className="mb-4">User Details</h2>
       <UserDetailsGrid user={user} onSave={handleUserSave} isUpdating={updateLoading} />
       <h3 className="mt-5 mb-3">Posts</h3>
       {posts.length === 0 && <div>No posts found.</div>}

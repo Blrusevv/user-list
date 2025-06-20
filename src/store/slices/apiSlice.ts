@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Task } from '../types/Task';
+import { Task } from '../../types/Task';
 
 const getStoredTasks = (): Task[] | null => {
   try {
@@ -46,15 +46,26 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: { completed },
       }),
-      async onQueryStarted(_, { queryFulfilled, getState }) {        
+      async onQueryStarted({ taskId, completed }, { dispatch, queryFulfilled, getState }) {
+        const patchResult = dispatch(
+          apiSlice.util.updateQueryData('getTasks', undefined, (draft) => {
+            const task = draft.find(t => t.id === taskId);
+            if (task) {
+              task.completed = completed;
+            }
+          })
+        );
+        
+        const state = getState() as any;
+        const tasks = state.api.queries['getTasks()']?.data;
+        if (tasks) {
+          setStoredTasks(tasks);
+        }
+        
         try {
           await queryFulfilled;
-          const state = getState() as any;
-          const tasks = state.api.queries['getTasks()']?.data;
-          if (tasks) {
-            setStoredTasks(tasks);
-          }
         } catch {
+          patchResult.undo();
           const state = getState() as any;
           const tasks = state.api.queries['getTasks()']?.data;
           if (tasks) {

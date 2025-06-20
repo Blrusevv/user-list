@@ -10,7 +10,6 @@ import { UserField } from '.';
 interface UserDetailsGridProps {
   user: User;
   onSave: (data: any) => Promise<void> | void;
-  onCancel?: () => void;
   isUpdating?: boolean;
 }
 
@@ -25,7 +24,7 @@ const fields = [
   { label: 'Company', name: 'company.name' },
 ];
 
-const UserDetailsGrid: React.FC<UserDetailsGridProps> = ({ user, onSave, onCancel, isUpdating = false }) => {
+const UserDetailsGrid: React.FC<UserDetailsGridProps> = ({ user, onSave, isUpdating = false }) => {
   const methods = useForm<any>({
     defaultValues: user,
     resolver: yupResolver(userSchema),
@@ -56,7 +55,7 @@ const UserDetailsGrid: React.FC<UserDetailsGridProps> = ({ user, onSave, onCance
           />
         ))}
         <div className="user-details-actions">
-          <Button variant="secondary" type="button" onClick={onCancel} disabled={isUpdating}>
+          <Button variant="secondary" type="button" onClick={() => { reset(user); }} disabled={!isChanged || isUpdating}>
             Cancel
           </Button>
           <Button variant="primary" type="submit" disabled={!isChanged || !formState.isValid || isUpdating}>

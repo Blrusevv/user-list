@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchUsers as fetchUsersService, updateUser as updateUserService } from '../../services/userService';
 import { UsersState } from './interfaces';
 import { User } from '../../types/User';
+import { getStoredUsers, setStoredUsers } from '../../utils';
 
 const initialState: UsersState = {
   users: [],
@@ -11,7 +12,17 @@ const initialState: UsersState = {
 };
 
 export const fetchUsers = createAsyncThunk<User[], void>('users/fetchUsers', async () => {
-  return await fetchUsersService();
+  const users = await fetchUsersService();
+  const storedUsers = getStoredUsers();
+  
+  if (storedUsers) {
+    return users.map((user: User) => {
+      const storedUser = storedUsers.find(u => u.id === user.id);
+      return storedUser ? { ...user, ...storedUser } : user;
+    });
+  }
+  
+  return users;
 });
 
 export const fetchUserById = createAsyncThunk<User, number>('users/fetchUserById', async (id) => {
@@ -38,6 +49,7 @@ const userSlice = createSlice({
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
         state.users = action.payload;
+        setStoredUsers(action.payload);
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
@@ -55,6 +67,7 @@ const userSlice = createSlice({
         } else {
           state.users.push(action.payload);
         }
+        setStoredUsers(state.users);
       })
       .addCase(fetchUserById.rejected, (state, action) => {
         state.loading = false;
@@ -67,6 +80,7 @@ const userSlice = createSlice({
         const updatedUser = action.payload;
         state.users = state.users.map((user: User) => (user.id === updatedUser.id ? { ...user, ...updatedUser } : user));
         state.updateLoading = false;
+        setStoredUsers(state.users);
       })
       .addCase(updateUser.rejected, (state) => {
         state.updateLoading = false;

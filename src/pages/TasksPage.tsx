@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useAppSelector } from '../hooks';
 import { fetchUsers } from '../store/slices/userSlice';
-import { useGetTasksQuery, useUpdateTaskStatusMutation } from '../services/apiSlice';
+import { useGetTasksQuery, useUpdateTaskStatusMutation } from '../store/slices/apiSlice';
 import { Task } from '../types/Task';
 import { User } from '../types/User';
 import Form from 'react-bootstrap/Form';
@@ -16,7 +16,7 @@ const TasksPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { users } = useAppSelector((state) => state.users);
 
-  const { data: tasks = [], isLoading, error } = useGetTasksQuery();
+  const { data: tasks = [], isLoading, error, refetch } = useGetTasksQuery();
   const [updateTaskStatus] = useUpdateTaskStatusMutation();
 
   const [updatingTaskId, setUpdatingTaskId] = useState<number | null>(null);
