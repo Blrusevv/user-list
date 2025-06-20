@@ -6,13 +6,35 @@ import Nav from 'react-bootstrap/Nav';
 
 const MainNav: React.FC = () => {
   const location = useLocation();
+  
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
+
   return (
     <Navbar bg="primary" variant="dark" expand="lg" className="mb-4 main-navbar">
       <Container fluid>
-        <Navbar.Brand as={Link} to="/">User List App</Navbar.Brand>
-        <Nav className="me-auto">
-          <Nav.Link as={Link} to="/" active={location.pathname === '/'}>Users</Nav.Link>
-          <Nav.Link as={Link} to="/tasks" active={location.pathname === '/tasks'}>Tasks</Nav.Link>
+        <Navbar.Brand as={Link} to="/" className="navbar-brand-custom">
+          User List App
+        </Navbar.Brand>
+        <Nav className="me-auto nav-links-custom">
+          <Nav.Link 
+            as={Link} 
+            to="/" 
+            className={`nav-link-custom ${isActive('/') ? 'active' : ''}`}
+          >
+            Users
+          </Nav.Link>
+          <Nav.Link 
+            as={Link} 
+            to="/tasks" 
+            className={`nav-link-custom ${isActive('/tasks') ? 'active' : ''}`}
+          >
+            Tasks
+          </Nav.Link>
         </Nav>
       </Container>
     </Navbar>
