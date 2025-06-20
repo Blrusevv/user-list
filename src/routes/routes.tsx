@@ -1,16 +1,17 @@
+import { useRoutes } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import UserLayout from '../layouts/UserLayout';
-import UsersPage from '../pages/UsersPage';
-import UserDetailsPage from '../pages/UserDetailsPage';
-import TasksPage from '../pages/TasksPage';
-import { useRoutes } from 'react-router-dom';
+import { UsersPage, UserDetailsPage, TasksPage } from '../pages';
 
-export const routes = [
+const routes = [
   {
     path: '/',
     element: <MainLayout />,
     children: [
-      { index: true, element: <UsersPage /> },
+      {
+        index: true,
+        element: <UsersPage />,
+      },
       {
         path: 'users/:userId',
         element: <UserLayout />,
@@ -18,10 +19,13 @@ export const routes = [
           { index: true, element: <UserDetailsPage /> },
         ],
       },
-      { path: 'tasks', element: <TasksPage /> },
+      {
+        path: 'tasks',
+        element: <TasksPage />,
+      },
     ],
   },
-]; 
+]
 
 const RoutesComponent = () => useRoutes(routes);
 export default RoutesComponent; 

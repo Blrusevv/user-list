@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './slices/userSlice';
-import postReducer from './slices/postSlice';
+import userSlice from './slices/userSlice';
+import postSlice from './slices/postSlice';
+import taskSlice from './slices/taskSlice';
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
-    users: userReducer,
-    posts: postReducer,
+    users: userSlice,
+    posts: postSlice,
+    tasks: taskSlice,
   },
 });
 
