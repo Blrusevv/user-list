@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { fetchTasks, updateTaskStatus } from '../store/slices/taskSlice';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useAppSelector } from '../hooks';
 import { fetchUsers } from '../store/slices/userSlice';
+import { useGetTasksQuery, useUpdateTaskStatusMutation } from '../services/apiSlice';
 import { Task } from '../types/Task';
 import { User } from '../types/User';
 import Form from 'react-bootstrap/Form';
@@ -10,11 +10,16 @@ import Pagination from 'react-bootstrap/Pagination';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 import Badge from 'react-bootstrap/Badge';
+import { useAppDispatch } from '../hooks';
 
 const TasksPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { tasks, loading, error, updatingTaskIds } = useAppSelector((state) => state.tasks);
   const { users } = useAppSelector((state) => state.users);
+
+  const { data: tasks = [], isLoading, error } = useGetTasksQuery();
+  const [updateTaskStatus] = useUpdateTaskStatusMutation();
+
+  const [updatingTaskId, setUpdatingTaskId] = useState<number | null>(null);
 
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [titleFilter, setTitleFilter] = useState<string>('');
@@ -24,7 +29,6 @@ const TasksPage: React.FC = () => {
   const pageSize = 10;
 
   useEffect(() => {
-    dispatch(fetchTasks());
     dispatch(fetchUsers());
   }, [dispatch]);
 
@@ -54,11 +58,18 @@ const TasksPage: React.FC = () => {
   }, [statusFilter, titleFilter, userFilter]);
 
   const handleStatusToggle = async (taskId: number, currentStatus: boolean) => {
-    await dispatch(updateTaskStatus({ taskId, completed: !currentStatus }));
+    setUpdatingTaskId(taskId);
+    try {
+      await updateTaskStatus({ taskId, completed: !currentStatus }).unwrap();
+    } catch (error) {
+      console.error('Failed to update task status:', error);
+    } finally {
+      setUpdatingTaskId(null);
+    }
   };
 
   const getUserName = (userId: number): string => {
-    const user = users.find((u: User) => u.id === userId);
+    const user = users.find((user: User) => user.id === userId);
     return user ? user.name : `User ${userId}`;
   };
 
@@ -96,7 +107,7 @@ const TasksPage: React.FC = () => {
     return <Pagination>{items}</Pagination>;
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container py-4">
         <div className="spinner-center">
@@ -109,15 +120,13 @@ const TasksPage: React.FC = () => {
   if (error) {
     return (
       <div className="container py-4">
-        <Alert variant="danger">{error}</Alert>
+        <Alert variant="danger">Failed to load tasks</Alert>
       </div>
     );
   }
 
   return (
-    <div className="container py-4">
-      <h2 className="mb-4">Tasks</h2>
-      
+    <div className="container py-4">      
       <div className="row mb-4">
         <div className="col-md-3">
           <Form.Group>
@@ -179,7 +188,7 @@ const TasksPage: React.FC = () => {
         </small>
       </div>
 
-      <div className="table-responsive">
+      <div>
         <table className="table table-striped table-bordered table-hover">
           <thead className="table-dark">
             <tr>
@@ -192,7 +201,7 @@ const TasksPage: React.FC = () => {
           </thead>
           <tbody>
             {paginatedTasks.map((task: Task) => {
-              const isUpdating = updatingTaskIds.includes(task.id);
+              const isUpdating = updatingTaskId === task.id;
               return (
                 <tr key={task.id}>
                   <td>{task.id}</td>
